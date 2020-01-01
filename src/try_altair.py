@@ -1,18 +1,21 @@
 from os.path import join
 
+import icu
 import altair as alt
 import pandas as pd
 
 
-f = "data/raw/city.csv"
+f = "data/raw/municipalities.csv"
 df = pd.read_csv(f, sep=",", encoding="utf-8")
 
 municipalities = list(df.columns)[1:]
+collator = icu.Collator.createInstance(icu.Locale('hu_HU.UTF-8'))
+sorted(municipalities, key=collator.getSortKey)
 options = []
 
 # generate time series vizs
 for municipality in municipalities:
-    t = f"<option value=\"{municipality}\">"
+    t = f"<option value=\"{municipality}\">{municipality}</option>"
     options.append(t)
     fname = join("charts", municipality + ".html")
     data = df[["date", municipality]]
